@@ -28,9 +28,9 @@ This roadmap outlines the planned development and future enhancements for the so
 * [ ] Search Functionality
   * [ ] Search for users
   * [ ] Search for posts
-* [ ] Database Setup (PostgreSQL)
+* [X] Database Setup (PostgreSQL)
 * [ ] Caching with Redis
-* [ ] ORM Integration (TypeORM)
+* [X] ORM Integration (TypeORM)
 * [ ] Search Engine Integration (Elasticsearch)
 * [ ] API Layer (GraphQL)
 * [ ] Authentication with Passport.js and JWT
