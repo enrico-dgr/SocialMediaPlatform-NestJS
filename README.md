@@ -93,7 +93,7 @@ cd social-media-backend
 
 ### 2\. Environment Variables
 
-Create a `.env` file in the root directory of the project based on `.env.example`.
+Create a `.env` file in the root directory of the project based on `.env.staging`.
 
 ```dotenv
 # Database Configuration (PostgreSQL)

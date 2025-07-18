@@ -8,11 +8,14 @@ This roadmap outlines the planned development and future enhancements for the so
   * [x] Install NestJS CLI
   * [x] Create New NestJS Project
   * [x] Verify Basic Setup (App Module, Controller, Service)
-* [ ] User Management Module
-  * [ ] User Registration
-  * [ ] User Authentication (JWT)
-  * [ ] Profile Management
-  * [ ] Account Settings
+* [X] Database Setup (PostgreSQL)
+* [X] ORM Integration (TypeORM)
+* [X] API Layer (GraphQL)
+* [x] User Management Module
+  * [x] User Registration
+  * [x] User Authentication (JWT)
+  * [x] Profile Management
+  * [x] Account Settings
 * [ ] Post Creation & Interaction
   * [ ] Create Text-Based Posts
   * [ ] Like Posts
@@ -28,11 +31,8 @@ This roadmap outlines the planned development and future enhancements for the so
 * [ ] Search Functionality
   * [ ] Search for users
   * [ ] Search for posts
-* [X] Database Setup (PostgreSQL)
 * [ ] Caching with Redis
-* [X] ORM Integration (TypeORM)
 * [ ] Search Engine Integration (Elasticsearch)
-* [ ] API Layer (GraphQL)
 * [ ] Authentication with Passport.js and JWT
 * [ ] Validation with Class Validator & Class Transformer
 * [ ] Testing Framework (Jest) Setup

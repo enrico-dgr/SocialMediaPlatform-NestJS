@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 /**
  * Health Check Controller
  */
-@ApiTags('health')
+@ApiTags('Health')
 @Controller('health')
 export class HealthController {
   /**

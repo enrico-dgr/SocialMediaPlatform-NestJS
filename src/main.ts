@@ -35,7 +35,7 @@ async function bootstrap() {
   app.enableCors(configService.get('app.cors'));
 
   // Setup Swagger documentation (only in development)
-  if (configService.get('app.environment') === 'development') {
+  if (configService.get('app.environment') !== 'production') {
     setupSwagger(app);
   }
 
@@ -45,15 +45,15 @@ async function bootstrap() {
   // Start the server
   await app.listen(port);
 
-  console.log(`🚀 Application is running on: http://localhost:${port}`);
+  console.log(`Application is running on: http://localhost:${port}`);
   console.log(
-    `🎮 GraphQL Playground available at: http://localhost:${port}/graphql`,
+    `GraphQL Playground available at: http://localhost:${port}/graphql`,
   );
 
   // Only show Swagger URL in development
   if (configService.get('app.environment') === 'development') {
     console.log(
-      `📚 Swagger API Documentation available at: http://localhost:${port}/api/docs`,
+      `Swagger API Documentation available at: http://localhost:${port}/api/docs`,
     );
   }
 }

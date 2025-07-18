@@ -2,6 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AuthPayload {
+  access_token: String!
+  user: User!
+}
+
+input ChangePasswordDto {
+  currentPassword: String!
+  newPassword: String!
+}
+
 """Comment model"""
 type Comment {
   """The user who wrote the comment"""
@@ -44,6 +54,19 @@ type Like {
 
   """The user who liked the post"""
   user: User!
+}
+
+input LoginDto {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  changePassword(input: ChangePasswordDto!): Boolean!
+  deactivateAccount: Boolean!
+  login(input: LoginDto!): AuthPayload!
+  register(input: RegisterUserDto!): AuthPayload!
+  updateProfile(input: UpdateUserDto!): User!
 }
 
 """Post model"""
@@ -89,7 +112,26 @@ type Post {
 }
 
 type Query {
-  user(id: String!): User!
+  me: User!
+  user(id: String!): User
+  users: [User!]!
+}
+
+input RegisterUserDto {
+  bio: String
+  email: String!
+  firstName: String
+  lastName: String
+  password: String!
+  username: String!
+}
+
+input UpdateUserDto {
+  avatarUrl: String
+  bio: String
+  firstName: String
+  isActive: Boolean
+  lastName: String
 }
 
 """User model"""

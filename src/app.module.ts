@@ -14,6 +14,7 @@ import appConfig from './config/app.config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './common/health/health.module';
 
 /**
@@ -36,8 +37,7 @@ import { HealthModule } from './common/health/health.module';
       // validationSchema: configValidationSchema,
 
       // Load .env file
-      // @todo fix file path by environment
-      envFilePath: ['.env', '.env.local'],
+      envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
 
     /**
@@ -83,6 +83,9 @@ import { HealthModule } from './common/health/health.module';
         // GraphQL path
         path: configService.get('app.graphql.path'),
 
+        // Disable CSRF protection for development (allows playground to work)
+        csrfPrevention: false,
+
         // Enable subscriptions for real-time features (future)
         subscriptions: {
           'graphql-ws': true,
@@ -90,11 +93,10 @@ import { HealthModule } from './common/health/health.module';
 
         // Context function - runs on every request
         // This is where we'll add authentication context
-        // context: ({ req, res }) => ({
-        //   req,
-        //   res,
-        //   // We'll add user context here later
-        // }),
+        context: ({ req, res }) => ({
+          req,
+          res,
+        }),
       }),
       inject: [ConfigService],
     }),
@@ -102,8 +104,8 @@ import { HealthModule } from './common/health/health.module';
     // Common modules
     HealthModule,
 
-    // TODO: Add feature modules here:
-    // AuthModule,
+    // Feature modules:
+    AuthModule,
     UsersModule,
     // PostsModule,
     // FeedModule,
