@@ -41,11 +41,11 @@ export function setupSwagger(app: INestApplication): void {
       },
       'JWT-auth', // This name here is important for matching up with @ApiBearerAuth() in your controller!
     )
-    .addTag('auth', 'Authentication endpoints')
-    .addTag('users', 'User management endpoints')
-    .addTag('posts', 'Post management endpoints')
-    .addTag('uploads', 'File upload endpoints')
-    .addTag('health', 'Health check endpoints')
+    .addTag('Authentication', 'Authentication endpoints')
+    .addTag('Users', 'User management endpoints')
+    .addTag('Posts', 'Post management endpoints')
+    .addTag('Uploads', 'File upload endpoints')
+    .addTag('Health', 'Health check endpoints')
     .addServer('http://localhost:3000', 'Development server')
     .addServer('https://api.yourdomain.com', 'Production server')
     .build();

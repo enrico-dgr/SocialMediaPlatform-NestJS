@@ -16,14 +16,14 @@ This roadmap outlines the planned development and future enhancements for the so
   * [x] User Authentication (JWT)
   * [x] Profile Management
   * [x] Account Settings
-* [ ] Post Creation & Interaction
-  * [ ] Create Text-Based Posts
-  * [ ] Like Posts
-  * [ ] Comment on Posts
+* [x] Post Creation & Interaction
+  * [x] Create Text-Based Posts
+  * [x] Like Posts
+  * [x] Comment on Posts
   * [ ] Share Posts
-* [ ] Follow System
-  * [ ] Users can follow other users
-  * [ ] Users can unfollow other users
+* [x] Follow System
+  * [x] Users can follow other users
+  * [x] Users can unfollow other users
 * [ ] Personalized News Feed
   * [ ] Dynamically generated news feed
   * [ ] Display posts from followed users

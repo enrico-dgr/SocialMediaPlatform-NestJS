@@ -15,7 +15,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { HealthModule } from './common/health/health.module';
+import { PostsModule } from './modules/posts/posts.module';
+import { HealthModule } from './modules/health/health.module';
 
 /**
  * Root Application Module
@@ -107,7 +108,7 @@ import { HealthModule } from './common/health/health.module';
     // Feature modules:
     AuthModule,
     UsersModule,
-    // PostsModule,
+    PostsModule,
     // FeedModule,
     // SearchModule,
   ],

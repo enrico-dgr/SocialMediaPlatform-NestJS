@@ -198,4 +198,113 @@ describe('UsersService', () => {
       await expect(service.changePassword('1', changePasswordDto)).rejects.toThrow(BadRequestException);
     });
   });
+
+  describe('followUser', () => {
+    const followingUser = { ...mockUser, id: '2', username: 'following_user' };
+
+    it('should follow a user successfully', async () => {
+      const followerWithFollowing = { ...mockUser, following: [] };
+      
+      userRepository.findOneBy.mockImplementation((criteria: any) => {
+        if (criteria.id === '1') return Promise.resolve(mockUser);
+        if (criteria.id === '2') return Promise.resolve(followingUser);
+        return Promise.resolve(null);
+      });
+      
+      userRepository.findOne.mockResolvedValue(followerWithFollowing);
+      userRepository.save.mockResolvedValue(followerWithFollowing);
+
+      const result = await service.followUser('1', '2');
+
+      expect(result).toBe(true);
+      expect(followerWithFollowing.following).toContain(followingUser);
+      expect(userRepository.save).toHaveBeenCalledWith(followerWithFollowing);
+    });
+
+    it('should throw BadRequestException when trying to follow yourself', async () => {
+      await expect(service.followUser('1', '1')).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw NotFoundException if user to follow does not exist', async () => {
+      userRepository.findOneBy.mockImplementation((criteria: any) => {
+        if (criteria.id === '1') return Promise.resolve(mockUser);
+        if (criteria.id === '2') return Promise.resolve(null);
+        return Promise.resolve(null);
+      });
+
+      await expect(service.followUser('1', '2')).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw ConflictException if already following', async () => {
+      const followerWithFollowing = { ...mockUser, following: [followingUser] };
+      
+      userRepository.findOneBy.mockImplementation((criteria: any) => {
+        if (criteria.id === '1') return Promise.resolve(mockUser);
+        if (criteria.id === '2') return Promise.resolve(followingUser);
+        return Promise.resolve(null);
+      });
+      
+      userRepository.findOne.mockResolvedValue(followerWithFollowing);
+
+      await expect(service.followUser('1', '2')).rejects.toThrow(ConflictException);
+    });
+  });
+
+  describe('unfollowUser', () => {
+    const followingUser = { ...mockUser, id: '2', username: 'following_user' };
+
+    it('should unfollow a user successfully', async () => {
+      const followerWithFollowing = { ...mockUser, following: [followingUser] };
+      
+      userRepository.findOne.mockResolvedValue(followerWithFollowing);
+      userRepository.save.mockResolvedValue(followerWithFollowing);
+
+      const result = await service.unfollowUser('1', '2');
+
+      expect(result).toBe(true);
+      expect(followerWithFollowing.following).not.toContain(followingUser);
+      expect(userRepository.save).toHaveBeenCalledWith(followerWithFollowing);
+    });
+
+    it('should throw BadRequestException when trying to unfollow yourself', async () => {
+      await expect(service.unfollowUser('1', '1')).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw NotFoundException if not following the user', async () => {
+      const followerWithFollowing = { ...mockUser, following: [] };
+      userRepository.findOne.mockResolvedValue(followerWithFollowing);
+
+      await expect(service.unfollowUser('1', '2')).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('isFollowing', () => {
+    const followingUser = { ...mockUser, id: '2', username: 'following_user' };
+
+    it('should return true if following', async () => {
+      const followerWithFollowing = { ...mockUser, following: [followingUser] };
+      userRepository.findOne.mockResolvedValue(followerWithFollowing);
+
+      const result = await service.isFollowing('1', '2');
+
+      expect(result).toBe(true);
+    });
+
+    it('should return false if not following', async () => {
+      const followerWithFollowing = { ...mockUser, following: [] };
+      userRepository.findOne.mockResolvedValue(followerWithFollowing);
+
+      const result = await service.isFollowing('1', '2');
+
+      expect(result).toBe(false);
+    });
+
+    it('should return false if user not found', async () => {
+      userRepository.findOne.mockResolvedValue(null);
+
+      const result = await service.isFollowing('1', '2');
+
+      expect(result).toBe(false);
+    });
+  });
 });
