@@ -13,7 +13,7 @@ export default registerAs('app', () => ({
 
   // CORS settings for frontend integration
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: process.env.FRONTEND_URL || ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:4173'],
     credentials: true,
   },
 
