@@ -114,29 +114,29 @@ const PostCard: React.FC<PostCardProps> = ({ post, onUpdate, onDelete }) => {
   };
 
   return (
-    <article className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-soft border border-gray-100/80 p-8 mb-8 hover:shadow-medium hover:border-gray-200/80 transition-all duration-300 ease-soft group">
+    <article className="bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-soft border border-gray-100/80 p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 lg:mb-8 hover:shadow-medium hover:border-gray-200/80 transition-all duration-300 ease-soft group">
       {/* Post Header */}
-      <header className="flex items-start justify-between mb-6">
-        <div className="flex items-start space-x-4">
-          <div className="relative">
-            <div className="w-14 h-14 bg-gradient-to-br from-primary-400 to-secondary-500 rounded-2xl flex items-center justify-center text-lg font-bold text-white shadow-colored ring-4 ring-primary-100/50 group-hover:ring-primary-200/70 transition-all duration-300">
+      <header className="flex items-start justify-between mb-4 sm:mb-6">
+        <div className="flex items-start space-x-3 sm:space-x-4 flex-1 min-w-0">
+          <div className="relative flex-shrink-0">
+            <div className="w-10 sm:w-12 lg:w-14 h-10 sm:h-12 lg:h-14 bg-gradient-to-br from-primary-400 to-secondary-500 rounded-xl sm:rounded-2xl flex items-center justify-center text-sm sm:text-base lg:text-lg font-bold text-white shadow-colored ring-2 sm:ring-4 ring-primary-100/50 group-hover:ring-primary-200/70 transition-all duration-300">
               {post.author.firstName?.[0] || post.author.username[0]}
             </div>
-            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-400 border-2 border-white rounded-full"></div>
+            <div className="absolute -bottom-0.5 -right-0.5 sm:-bottom-1 sm:-right-1 w-3 sm:w-4 lg:w-5 h-3 sm:h-4 lg:h-5 bg-green-400 border border-white sm:border-2 rounded-full"></div>
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center space-x-2 mb-1">
-              <h3 className="text-subtitle font-semibold text-gray-900 truncate">
+            <div className="flex items-center space-x-1 sm:space-x-2 mb-1">
+              <h3 className="text-sm sm:text-base lg:text-subtitle font-semibold text-gray-900 truncate">
                 {post.author.firstName && post.author.lastName 
                   ? `${post.author.firstName} ${post.author.lastName}` 
                   : post.author.username}
               </h3>
-              <span className="text-micro text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full">
+              <span className="text-xs lg:text-micro text-primary-600 bg-primary-50 px-1.5 sm:px-2 py-0.5 rounded-full flex-shrink-0">
                 Pro
               </span>
             </div>
-            <p className="text-caption text-gray-600 font-medium">@{post.author.username}</p>
-            <time className="text-micro text-gray-500 font-normal" dateTime={post.createdAt}>
+            <p className="text-xs sm:text-sm lg:text-caption text-gray-600 font-medium truncate">@{post.author.username}</p>
+            <time className="text-xs lg:text-micro text-gray-500 font-normal" dateTime={post.createdAt}>
               {new Date(post.createdAt).toLocaleDateString('en-US', { 
                 month: 'short', 
                 day: 'numeric',
@@ -148,23 +148,23 @@ const PostCard: React.FC<PostCardProps> = ({ post, onUpdate, onDelete }) => {
         </div>
         
         {isAuthor && (
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <button
               onClick={() => setShowMenu(!showMenu)}
-              className="p-2 rounded-2xl hover:bg-gray-100/80 transition-all duration-200 opacity-0 group-hover:opacity-100"
+              className="p-1.5 sm:p-2 rounded-xl sm:rounded-2xl hover:bg-gray-100/80 transition-all duration-200 opacity-60 group-hover:opacity-100"
             >
-              <MoreVertical className="w-5 h-5 text-gray-500" />
+              <MoreVertical className="w-4 sm:w-5 h-4 sm:h-5 text-gray-500" />
             </button>
             {showMenu && (
-              <div className="absolute right-0 mt-2 w-52 bg-white/95 backdrop-blur-sm rounded-2xl shadow-strong z-10 border border-gray-100/80 overflow-hidden">
+              <div className="absolute right-0 mt-2 w-44 sm:w-52 bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-strong z-10 border border-gray-100/80 overflow-hidden">
                 <button
                   onClick={() => {
                     setIsEditing(true);
                     setShowMenu(false);
                   }}
-                  className="flex items-center space-x-3 w-full px-4 py-3 text-sm font-medium text-gray-700 hover:bg-primary-50/80 transition-all duration-200"
+                  className="flex items-center space-x-2 sm:space-x-3 w-full px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-700 hover:bg-primary-50/80 transition-all duration-200"
                 >
-                  <Edit className="w-4 h-4 text-primary-600" />
+                  <Edit className="w-3 sm:w-4 h-3 sm:h-4 text-primary-600" />
                   <span>Edit Post</span>
                 </button>
                 <div className="border-t border-gray-100"></div>
@@ -173,9 +173,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, onUpdate, onDelete }) => {
                     handleDeletePost();
                     setShowMenu(false);
                   }}
-                  className="flex items-center space-x-3 w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50/80 transition-all duration-200"
+                  className="flex items-center space-x-2 sm:space-x-3 w-full px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-red-600 hover:bg-red-50/80 transition-all duration-200"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-3 sm:w-4 h-3 sm:h-4" />
                   <span>Delete Post</span>
                 </button>
               </div>
@@ -186,37 +186,37 @@ const PostCard: React.FC<PostCardProps> = ({ post, onUpdate, onDelete }) => {
 
       {/* Post Content */}
       {isEditing ? (
-        <form onSubmit={handleUpdatePost} className="mb-6">
+        <form onSubmit={handleUpdatePost} className="mb-4 sm:mb-6">
           <textarea
             value={editContent}
             onChange={(e) => setEditContent(e.target.value)}
-            className="w-full p-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-primary-100 focus:border-primary-400 bg-gray-50/50 text-body-lg resize-none transition-all duration-200"
-            rows={4}
+            className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl sm:rounded-2xl focus:ring-4 focus:ring-primary-100 focus:border-primary-400 bg-gray-50/50 text-sm sm:text-base lg:text-body-lg resize-none transition-all duration-200"
+            rows={3}
             required
             placeholder="Share your thoughts..."
           />
-          <div className="flex justify-end space-x-3 mt-4">
+          <div className="flex justify-end space-x-2 sm:space-x-3 mt-3 sm:mt-4">
             <button
               type="button"
               onClick={() => setIsEditing(false)}
-              className="px-5 py-2.5 text-sm font-medium border-2 border-gray-300 rounded-2xl hover:bg-gray-50 transition-all duration-200"
+              className="px-3 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-medium border-2 border-gray-300 rounded-xl sm:rounded-2xl hover:bg-gray-50 transition-all duration-200"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isUpdating}
-              className="px-6 py-2.5 text-sm font-bold bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-2xl hover:shadow-colored-lg hover:scale-105 disabled:opacity-50 disabled:scale-100 transition-all duration-200"
+              className="px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl sm:rounded-2xl hover:shadow-colored-lg hover:scale-105 disabled:opacity-50 disabled:scale-100 transition-all duration-200"
             >
               {isUpdating ? 'Saving...' : 'Save Changes'}
             </button>
           </div>
         </form>
       ) : (
-        <div className="mb-6">
-          <p className="text-body-lg leading-relaxed text-gray-800 whitespace-pre-wrap font-normal">{post.content}</p>
+        <div className="mb-4 sm:mb-6">
+          <p className="text-sm sm:text-base lg:text-body-lg leading-relaxed text-gray-800 whitespace-pre-wrap font-normal">{post.content}</p>
           {post.imageUrl && (
-            <div className="mt-6 rounded-3xl overflow-hidden shadow-soft">
+            <div className="mt-3 sm:mt-4 lg:mt-6 rounded-xl sm:rounded-2xl lg:rounded-3xl overflow-hidden shadow-soft">
               <img 
                 src={post.imageUrl} 
                 alt="Post image" 
@@ -228,56 +228,57 @@ const PostCard: React.FC<PostCardProps> = ({ post, onUpdate, onDelete }) => {
       )}
 
       {/* Post Actions */}
-      <footer className="flex items-center justify-between pt-6 border-t border-gray-100/60">
-        <div className="flex items-center space-x-1">
+      <footer className="flex items-center justify-between pt-3 sm:pt-4 lg:pt-6 border-t border-gray-100/60">
+        <div className="flex items-center space-x-0.5 sm:space-x-1">
           <button
             onClick={handleLike}
-            className={`group flex items-center space-x-2 px-4 py-2.5 rounded-2xl transition-all duration-300 ${
+            className={`group flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 lg:py-2.5 rounded-lg sm:rounded-xl lg:rounded-2xl transition-all duration-300 ${
               isLiked 
                 ? 'text-red-600 bg-red-50/80 hover:bg-red-100/80' 
                 : 'text-gray-600 hover:text-red-600 hover:bg-red-50/50'
             }`}
           >
-            <Heart className={`w-5 h-5 transition-all duration-300 ${
+            <Heart className={`w-4 sm:w-5 h-4 sm:h-5 transition-all duration-300 ${
               isLiked ? 'fill-current scale-110' : 'group-hover:scale-110'
             }`} />
-            <span className="font-semibold text-sm">{post.likesCount}</span>
+            <span className="font-semibold text-xs sm:text-sm">{post.likesCount}</span>
           </button>
           
           <button
             onClick={handleShowComments}
-            className="group flex items-center space-x-2 px-4 py-2.5 rounded-2xl text-gray-600 hover:text-primary-600 hover:bg-primary-50/50 transition-all duration-300"
+            className="group flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 lg:py-2.5 rounded-lg sm:rounded-xl lg:rounded-2xl text-gray-600 hover:text-primary-600 hover:bg-primary-50/50 transition-all duration-300"
           >
-            <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-            <span className="font-semibold text-sm">{post.commentsCount}</span>
+            <MessageCircle className="w-4 sm:w-5 h-4 sm:h-5 group-hover:scale-110 transition-transform duration-300" />
+            <span className="font-semibold text-xs sm:text-sm">{post.commentsCount}</span>
           </button>
         </div>
         
-        <div className="flex items-center space-x-2 text-micro text-gray-500">
-          <span>{post.likesCount + post.commentsCount} interactions</span>
+        <div className="flex items-center space-x-2 text-xs lg:text-micro text-gray-500">
+          <span className="hidden sm:inline">{post.likesCount + post.commentsCount} interactions</span>
+          <span className="sm:hidden">{post.likesCount + post.commentsCount}</span>
         </div>
       </footer>
 
       {/* Comments Section */}
       {showComments && (
-        <div className="mt-6 pt-6 border-t border-gray-100/60 animate-fade-in">
+        <div className="mt-3 sm:mt-4 lg:mt-6 pt-3 sm:pt-4 lg:pt-6 border-t border-gray-100/60 animate-fade-in">
           {/* Add Comment Form */}
-          <form onSubmit={handleAddComment} className="flex space-x-4 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-accent-400 to-primary-500 rounded-2xl flex items-center justify-center text-sm font-bold text-white shadow-soft">
+          <form onSubmit={handleAddComment} className="flex space-x-2 sm:space-x-3 lg:space-x-4 mb-4 sm:mb-6">
+            <div className="w-8 sm:w-10 h-8 sm:h-10 bg-gradient-to-br from-accent-400 to-primary-500 rounded-lg sm:rounded-xl lg:rounded-2xl flex items-center justify-center text-xs sm:text-sm font-bold text-white shadow-soft flex-shrink-0">
               {user?.firstName?.[0] || user?.username[0]}
             </div>
-            <div className="flex-1 flex space-x-3">
+            <div className="flex-1 flex space-x-2 sm:space-x-3">
               <input
                 type="text"
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Write a thoughtful comment..."
-                className="flex-1 px-4 py-3 bg-gray-50/50 border-2 border-gray-200/60 rounded-2xl focus:ring-4 focus:ring-primary-100 focus:border-primary-400 text-subtitle placeholder-gray-500 transition-all duration-200"
+                placeholder="Write a comment..."
+                className="flex-1 px-3 sm:px-4 py-2 sm:py-3 bg-gray-50/50 border-2 border-gray-200/60 rounded-lg sm:rounded-xl lg:rounded-2xl focus:ring-4 focus:ring-primary-100 focus:border-primary-400 text-sm sm:text-base lg:text-subtitle placeholder-gray-500 transition-all duration-200"
               />
               <button
                 type="submit"
                 disabled={isCommenting || !newComment.trim()}
-                className="px-4 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-2xl hover:shadow-colored hover:scale-105 disabled:opacity-50 disabled:scale-100 transition-all duration-200 group"
+                className="px-3 sm:px-4 py-2 sm:py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-lg sm:rounded-xl lg:rounded-2xl hover:shadow-colored hover:scale-105 disabled:opacity-50 disabled:scale-100 transition-all duration-200 group flex-shrink-0"
               >
                 <Send className="w-4 h-4 group-hover:rotate-12 transition-transform duration-200" />
               </button>

@@ -41,11 +41,19 @@ This roadmap outlines the planned development and future enhancements for the so
 
 ## Advanced Features & Architectural Enhancements
 
-* [ ] Real-time Updates (Planned/Future) [cite: 11, 116]
-  * [ ] Notifications for new likes
-  * [ ] Notifications for new comments
-  * [ ] Notifications for new followers
-  * [ ] Implement WebSockets for instant notifications
+* [x] Real-time Updates
+  * [x] Notifications for new likes
+  * [x] Notifications for new comments
+  * [x] Notifications for new followers
+  * [x] Implement WebSockets for instant notifications
+  * [x] Offline notification handling on login/reconnection
+* [x] Direct Messaging
+  * [x] One-on-one chat functionalities
+  * [x] Real-time messaging with WebSockets
+  * [x] Message history and persistence
+  * [x] Typing indicators
+  * [x] Read receipts
+  * [x] Chat UI with conversation list
 * [ ] Scalability & Performance Improvements
   * [ ] Caching implementation
   * [ ] Search optimization
@@ -76,9 +84,10 @@ This roadmap outlines the planned development and future enhancements for the so
 
 ## Future Enhancements / Ideas
 
-* [ ] Direct Messaging
-  * [ ] One-on-one chat functionalities
+* [ ] Group Messaging
   * [ ] Group chat functionalities
+  * [ ] Group management (add/remove members)
+  * [ ] Group admin features
 * [ ] Recommendation Engine
   * [ ] Algorithms to suggest users to follow
   * [ ] Algorithms to suggest posts to view

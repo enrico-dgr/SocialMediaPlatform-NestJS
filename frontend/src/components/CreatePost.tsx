@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { apiClient, type Post } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Image, Send } from 'lucide-react';
+import { extractErrorMessage, createHttpError, type FormSubmitHandler, type ApiRequestError } from '../types/common';
 
 interface CreatePostProps {
   onPostCreated: (post: Post) => void;
@@ -15,7 +16,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
   const [error, setError] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit: FormSubmitHandler = useCallback(async (e) => {
     e.preventDefault();
     if (!content.trim()) return;
 
@@ -27,12 +28,15 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
       onPostCreated(newPost);
       setContent('');
       setImageUrl('');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to create post');
+    } catch (error: unknown) {
+      const typedError = (typeof error === 'object' && error !== null && ('response' in error || 'code' in error)) 
+        ? createHttpError(error as ApiRequestError) 
+        : error;
+      setError(extractErrorMessage(typedError));
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [content, imageUrl, onPostCreated]);
 
   if (!user) return null;
 

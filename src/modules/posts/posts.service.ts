@@ -3,11 +3,16 @@ import {
   NotFoundException,
   ForbiddenException,
   ConflictException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post, Comment, Like } from 'src/database/entities';
 import { CreatePostDto, UpdatePostDto, CreateCommentDto } from './dtos';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationsGateway } from '../notifications/notifications.gateway';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class PostsService {
@@ -18,6 +23,12 @@ export class PostsService {
     private commentsRepository: Repository<Comment>,
     @InjectRepository(Like)
     private likesRepository: Repository<Like>,
+    @Inject(forwardRef(() => NotificationsService))
+    private notificationsService: NotificationsService,
+    @Inject(forwardRef(() => NotificationsGateway))
+    private notificationsGateway: NotificationsGateway,
+    @Inject(forwardRef(() => UsersService))
+    private usersService: UsersService,
   ) {}
 
   async createPost(
@@ -29,7 +40,9 @@ export class PostsService {
       authorId,
     });
 
-    return this.postsRepository.save(post);
+    await this.postsRepository.save(post);
+
+    return this.getPostById(post.id, authorId);
   }
 
   async getAllPosts(currentUserId?: string): Promise<Post[]> {
@@ -115,6 +128,7 @@ export class PostsService {
     // Check if post exists
     const post = await this.postsRepository.findOne({
       where: { id: postId, isActive: true },
+      relations: ['author'],
     });
 
     if (!post) {
@@ -137,6 +151,32 @@ export class PostsService {
     });
 
     await this.likesRepository.save(like);
+
+    // Send real-time notification for like
+    if (post.authorId !== userId) {
+      try {
+        const actor = await this.usersService.findById(userId);
+        if (!actor) return true; // If actor not found, just continue
+        const notification =
+          await this.notificationsService.createLikeNotification(
+            parseInt(userId),
+            parseInt(post.authorId),
+            parseInt(postId),
+            actor.username,
+          );
+
+        if (notification) {
+          await this.notificationsGateway.sendNotificationToUser(
+            parseInt(post.authorId),
+            notification,
+          );
+        }
+      } catch (error) {
+        console.error('Failed to send like notification:', error);
+        // Don't throw error - notification failure shouldn't break like functionality
+      }
+    }
+
     return true;
   }
 
@@ -171,6 +211,7 @@ export class PostsService {
     // Check if post exists
     const post = await this.postsRepository.findOne({
       where: { id: postId, isActive: true },
+      relations: ['author'],
     });
 
     if (!post) {
@@ -183,7 +224,34 @@ export class PostsService {
       authorId,
     });
 
-    return this.commentsRepository.save(comment);
+    const savedComment = await this.commentsRepository.save(comment);
+
+    // Send real-time notification for comment
+    if (post.authorId !== authorId) {
+      try {
+        const actor = await this.usersService.findById(authorId);
+        if (!actor) return savedComment; // If actor not found, just continue
+        const notification =
+          await this.notificationsService.createCommentNotification(
+            parseInt(authorId),
+            parseInt(post.authorId),
+            parseInt(postId),
+            actor.username,
+          );
+
+        if (notification) {
+          await this.notificationsGateway.sendNotificationToUser(
+            parseInt(post.authorId),
+            notification,
+          );
+        }
+      } catch (error) {
+        console.error('Failed to send comment notification:', error);
+        // Don't throw error - notification failure shouldn't break comment functionality
+      }
+    }
+
+    return savedComment;
   }
 
   async getCommentsByPost(postId: string): Promise<Comment[]> {

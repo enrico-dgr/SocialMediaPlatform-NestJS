@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { apiClient, type User, type Post } from '../services/api';
 import PostCard from '../components/PostCard';
-import { Search as SearchIcon, User as UserIcon, MessageSquare, Users } from 'lucide-react';
+import {
+  Search as SearchIcon,
+  User as UserIcon,
+  MessageSquare,
+  Users,
+} from 'lucide-react';
 
 const Search: React.FC = () => {
   const { user: currentUser } = useAuth();
@@ -34,12 +39,12 @@ const Search: React.FC = () => {
     try {
       const [usersData, postsData] = await Promise.all([
         apiClient.getUsers(),
-        apiClient.getAllPosts()
+        apiClient.getAllPosts(),
       ]);
-      
-      setAllUsers(usersData.filter(u => u.id !== currentUser?.id));
+
+      setAllUsers(usersData.filter((u) => u.id !== currentUser?.id));
       setAllPosts(postsData);
-      setUsers(usersData.filter(u => u.id !== currentUser?.id));
+      setUsers(usersData.filter((u) => u.id !== currentUser?.id));
       setPosts(postsData);
     } catch (error) {
       console.error('Failed to load data:', error);
@@ -53,20 +58,24 @@ const Search: React.FC = () => {
     const searchTerm = query.toLowerCase().trim();
 
     // Search users
-    const filteredUsers = allUsers.filter(user =>
-      user.username.toLowerCase().includes(searchTerm) ||
-      user.email.toLowerCase().includes(searchTerm) ||
-      (user.firstName && user.firstName.toLowerCase().includes(searchTerm)) ||
-      (user.lastName && user.lastName.toLowerCase().includes(searchTerm)) ||
-      (user.bio && user.bio.toLowerCase().includes(searchTerm))
+    const filteredUsers = allUsers.filter(
+      (user) =>
+        user.username.toLowerCase().includes(searchTerm) ||
+        user.email.toLowerCase().includes(searchTerm) ||
+        (user.firstName && user.firstName.toLowerCase().includes(searchTerm)) ||
+        (user.lastName && user.lastName.toLowerCase().includes(searchTerm)) ||
+        (user.bio && user.bio.toLowerCase().includes(searchTerm)),
     );
 
     // Search posts
-    const filteredPosts = allPosts.filter(post =>
-      post.content.toLowerCase().includes(searchTerm) ||
-      post.author.username.toLowerCase().includes(searchTerm) ||
-      (post.author.firstName && post.author.firstName.toLowerCase().includes(searchTerm)) ||
-      (post.author.lastName && post.author.lastName.toLowerCase().includes(searchTerm))
+    const filteredPosts = allPosts.filter(
+      (post) =>
+        post.content.toLowerCase().includes(searchTerm) ||
+        post.author.username.toLowerCase().includes(searchTerm) ||
+        (post.author.firstName &&
+          post.author.firstName.toLowerCase().includes(searchTerm)) ||
+        (post.author.lastName &&
+          post.author.lastName.toLowerCase().includes(searchTerm)),
     );
 
     setUsers(filteredUsers);
@@ -74,13 +83,15 @@ const Search: React.FC = () => {
   };
 
   const handlePostUpdate = (updatedPost: Post) => {
-    setPosts(posts.map(p => p.id === updatedPost.id ? updatedPost : p));
-    setAllPosts(allPosts.map(p => p.id === updatedPost.id ? updatedPost : p));
+    setPosts(posts.map((p) => (p.id === updatedPost.id ? updatedPost : p)));
+    setAllPosts(
+      allPosts.map((p) => (p.id === updatedPost.id ? updatedPost : p)),
+    );
   };
 
   const handlePostDelete = (postId: number) => {
-    setPosts(posts.filter(p => p.id !== postId));
-    setAllPosts(allPosts.filter(p => p.id !== postId));
+    setPosts(posts.filter((p) => p.id !== postId));
+    setAllPosts(allPosts.filter((p) => p.id !== postId));
   };
 
   return (
@@ -89,7 +100,7 @@ const Search: React.FC = () => {
         {/* Search Header */}
         <div className="px-6 py-4 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Search</h2>
-          
+
           {/* Search Input */}
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -149,31 +160,38 @@ const Search: React.FC = () => {
                         {hasSearched ? 'No users found' : 'All Users'}
                       </h3>
                       <p className="text-gray-600">
-                        {hasSearched 
+                        {hasSearched
                           ? 'Try searching with different keywords'
-                          : 'Search for users by name, username, or bio'
-                        }
+                          : 'Search for users by name, username, or bio'}
                       </p>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       {users.map((user) => (
-                        <div key={user.id} className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                        <div
+                          key={user.id}
+                          className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
+                        >
                           <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-lg font-semibold">
                             {user.firstName?.[0] || user.username[0]}
                           </div>
                           <div className="flex-1">
                             <h3 className="text-lg font-medium text-gray-900">
-                              {user.firstName && user.lastName 
-                                ? `${user.firstName} ${user.lastName}` 
+                              {user.firstName && user.lastName
+                                ? `${user.firstName} ${user.lastName}`
                                 : user.username}
                             </h3>
-                            <p className="text-sm text-gray-600">@{user.username}</p>
+                            <p className="text-sm text-gray-600">
+                              @{user.username}
+                            </p>
                             {user.bio && (
-                              <p className="text-sm text-gray-500 mt-1">{user.bio}</p>
+                              <p className="text-sm text-gray-500 mt-1">
+                                {user.bio}
+                              </p>
                             )}
                             <p className="text-xs text-gray-400 mt-1">
-                              Joined {new Date(user.createdAt).toLocaleDateString()}
+                              Joined{' '}
+                              {new Date(user.createdAt).toLocaleDateString()}
                             </p>
                           </div>
                           <div className="text-sm text-gray-500">
@@ -196,10 +214,9 @@ const Search: React.FC = () => {
                         {hasSearched ? 'No posts found' : 'All Posts'}
                       </h3>
                       <p className="text-gray-600">
-                        {hasSearched 
+                        {hasSearched
                           ? 'Try searching with different keywords'
-                          : 'Search for posts by content or author'
-                        }
+                          : 'Search for posts by content or author'}
                       </p>
                     </div>
                   ) : (

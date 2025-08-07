@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { UserPlus, Mail, User } from 'lucide-react';
@@ -6,6 +6,13 @@ import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Alert from '../components/ui/Alert';
+import {
+  extractErrorMessage,
+  createHttpError,
+  type InputChangeHandler,
+  type FormSubmitHandler,
+  type ApiRequestError,
+} from '../types/common';
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -18,60 +25,75 @@ const Register: React.FC = () => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
+  const handleChange: InputChangeHandler = useCallback((e) => {
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
-  };
+    }));
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  const handleSubmit: FormSubmitHandler = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setError('');
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
+      if (formData.password !== formData.confirmPassword) {
+        setError('Passwords do not match');
+        return;
+      }
 
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
-      return;
-    }
+      if (formData.password.length < 6) {
+        setError('Password must be at least 6 characters long');
+        return;
+      }
 
-    setIsLoading(true);
+      setIsLoading(true);
 
-    try {
-      await register({
-        email: formData.email,
-        password: formData.password,
-        username: formData.username,
-        firstName: formData.firstName || undefined,
-        lastName: formData.lastName || undefined,
-      });
-      navigate('/');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      try {
+        await register({
+          email: formData.email,
+          password: formData.password,
+          username: formData.username,
+          firstName: formData.firstName || undefined,
+          lastName: formData.lastName || undefined,
+        });
+        navigate('/');
+      } catch (error: unknown) {
+        const typedError =
+          typeof error === 'object' &&
+          error !== null &&
+          ('response' in error || 'code' in error)
+            ? createHttpError(error as ApiRequestError)
+            : error;
+        setError(extractErrorMessage(typedError));
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [formData, register, navigate],
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-mesh from-secondary-50 via-white via-60% to-primary-100 bg-noise relative overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-mesh from-secondary-50 via-white via-60% to-primary-100 relative overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -left-40 w-80 h-80 bg-secondary-200/30 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-primary-200/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '1.5s' }}></div>
+        <div
+          className="absolute -bottom-40 -right-40 w-80 h-80 bg-primary-200/30 rounded-full blur-3xl animate-float"
+          style={{ animationDelay: '1.5s' }}
+        ></div>
         <div className="absolute top-1/3 right-1/3 w-96 h-96 bg-accent-100/20 rounded-full blur-3xl animate-pulse-soft"></div>
       </div>
-      
+
       <div className="max-w-lg w-full relative z-10">
-        <Card variant="glass" className="animate-fade-in-up shadow-strong backdrop-blur-xl border-white/30">
+        <Card
+          variant="glass"
+          className="animate-fade-in-up shadow-strong backdrop-blur-xl border-white/30"
+        >
           {/* Header */}
           <div className="text-center mb-8">
             <div className="mx-auto h-20 w-20 flex items-center justify-center rounded-3xl bg-gradient-to-br from-secondary-500 via-secondary-600 to-primary-600 mb-6 shadow-colored-lg animate-bounce-soft">
@@ -178,7 +200,9 @@ const Register: React.FC = () => {
               size="lg"
               fullWidth
               isLoading={isLoading}
-              leftIcon={!isLoading ? <UserPlus className="h-5 w-5" /> : undefined}
+              leftIcon={
+                !isLoading ? <UserPlus className="h-5 w-5" /> : undefined
+              }
             >
               {isLoading ? 'Creating account...' : 'Create account'}
             </Button>
@@ -201,8 +225,13 @@ const Register: React.FC = () => {
           <div className="mt-6 p-5 bg-gradient-to-r from-secondary-50/80 to-primary-50/80 rounded-2xl border border-white/50 backdrop-blur-sm">
             <p className="text-sm text-gray-700 text-center font-medium">
               By creating an account, you agree to our{' '}
-              <span className="text-primary-600 font-semibold hover:text-primary-700 cursor-pointer transition-colors">Terms of Service</span> and{' '}
-              <span className="text-primary-600 font-semibold hover:text-primary-700 cursor-pointer transition-colors">Privacy Policy</span>
+              <span className="text-primary-600 font-semibold hover:text-primary-700 cursor-pointer transition-colors">
+                Terms of Service
+              </span>{' '}
+              and{' '}
+              <span className="text-primary-600 font-semibold hover:text-primary-700 cursor-pointer transition-colors">
+                Privacy Policy
+              </span>
             </p>
           </div>
         </Card>

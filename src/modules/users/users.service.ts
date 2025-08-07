@@ -3,18 +3,26 @@ import {
   ConflictException,
   NotFoundException,
   BadRequestException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/database/entities';
 import { Repository } from 'typeorm';
 import { RegisterUserDto, UpdateUserDto, ChangePasswordDto } from './dtos';
 import * as bcrypt from 'bcrypt';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationsGateway } from '../notifications/notifications.gateway';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @Inject(forwardRef(() => NotificationsService))
+    private notificationsService: NotificationsService,
+    @Inject(forwardRef(() => NotificationsGateway))
+    private notificationsGateway: NotificationsGateway,
   ) {}
 
   public findById(id: string): Promise<User | null> {
@@ -213,6 +221,25 @@ export class UsersService {
     // Add the relationship
     followerWithFollowing.following.push(following);
     await this.usersRepository.save(followerWithFollowing);
+
+    // Send real-time notification for follow
+    try {
+      const notification = await this.notificationsService.createFollowNotification(
+        parseInt(followerId),
+        parseInt(followingId),
+        follower.username,
+      );
+      
+      if (notification) {
+        await this.notificationsGateway.sendNotificationToUser(
+          parseInt(followingId),
+          notification,
+        );
+      }
+    } catch (error) {
+      console.error('Failed to send follow notification:', error);
+      // Don't throw error - notification failure shouldn't break follow functionality
+    }
 
     return true;
   }

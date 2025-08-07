@@ -17,6 +17,8 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { HealthModule } from './modules/health/health.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { ChatModule } from './modules/chat/chat.module';
 
 /**
  * Root Application Module
@@ -109,6 +111,8 @@ import { HealthModule } from './modules/health/health.module';
     AuthModule,
     UsersModule,
     PostsModule,
+    NotificationsModule,
+    ChatModule,
     // FeedModule,
     // SearchModule,
   ],

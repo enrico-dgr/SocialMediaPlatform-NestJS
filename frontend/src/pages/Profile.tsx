@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { apiClient, type UserStats } from '../services/api';
 import { Edit, Mail, Calendar, Users, Save, X, Sparkles } from 'lucide-react';
 import { Button, Input, Card, Avatar, Badge } from '../components/ui';
+import { extractErrorMessage, createHttpError, type InputChangeHandler, type FormSubmitHandler, type ApiRequestError } from '../types/common';
 
 const Profile: React.FC = () => {
   const { user, updateUser } = useAuth();
@@ -16,23 +17,26 @@ const Profile: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (user) {
-      loadUserStats();
-    }
-  }, [user]);
-
-  const loadUserStats = async () => {
+  const loadUserStats = useCallback(async () => {
     if (!user) return;
     try {
       const userStats = await apiClient.getUserStats(user.id);
       setStats(userStats);
-    } catch (err) {
-      console.error('Failed to load user stats:', err);
+    } catch (error: unknown) {
+      const typedError = (typeof error === 'object' && error !== null && ('response' in error || 'code' in error)) 
+        ? createHttpError(error as ApiRequestError) 
+        : error;
+      console.error('Failed to load user stats:', extractErrorMessage(typedError));
     }
-  };
+  }, [user]);
 
-  const handleEditSubmit = async (e: React.FormEvent) => {
+  useEffect(() => {
+    if (user) {
+      loadUserStats();
+    }
+  }, [user, loadUserStats]);
+
+  const handleEditSubmit: FormSubmitHandler = useCallback(async (e) => {
     e.preventDefault();
     if (!user) return;
 
@@ -43,19 +47,22 @@ const Profile: React.FC = () => {
       const updatedUser = await apiClient.updateProfile(user.id, editForm);
       updateUser(updatedUser);
       setIsEditing(false);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to update profile');
+    } catch (error: unknown) {
+      const typedError = (typeof error === 'object' && error !== null && ('response' in error || 'code' in error)) 
+        ? createHttpError(error as ApiRequestError) 
+        : error;
+      setError(extractErrorMessage(typedError));
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user, editForm, updateUser]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setEditForm({
-      ...editForm,
+  const handleInputChange: InputChangeHandler = useCallback((e) => {
+    setEditForm(prev => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
-  };
+    }));
+  }, []);
 
   if (!user) return null;
 
